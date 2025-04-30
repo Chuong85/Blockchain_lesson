@@ -1,15 +1,8 @@
 import { Dialog } from '@headlessui/react';
-import React, { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { useBalances, useTokenBalances } from '../hooks/useBalance';
+import { useBalances } from '../hooks/useBalance';
 import { useTransfer } from '../hooks/useTransfer';
-
-interface Token {
-  address: string;
-  symbol: string;
-  decimals: number;
-  balance: string;
-}
+import { useMemo } from 'react';
 
 interface SendTokenModalProps {
   isOpen: boolean;
@@ -22,7 +15,7 @@ export function SendTokenModal({ isOpen, onClose }: SendTokenModalProps) {
     watch,
     setValue,
     register,
-    handleSubmit
+    handleSubmit,
   } = useForm({
     defaultValues: {
       selectedToken: '',
@@ -32,11 +25,17 @@ export function SendTokenModal({ isOpen, onClose }: SendTokenModalProps) {
 
   });
 
-  const { isPending, data: tx } = useTransfer();
+  const { isPending, data: tx, mutateAsync } = useTransfer();
 
-  const selectedToken = tokens?.[0]
+  const watchToken = watch('selectedToken')
+  const selectedToken = useMemo(() => tokens?.find((token) => token.address === watchToken), [tokens, watchToken])
 
   const onSubmit = async (data: any) => {
+    const tx = await mutateAsync({
+      token: selectedToken!,
+      recipient: data.recipient,
+      amount: data.amount
+    })
   }
 
   if (!isOpen) return null;
@@ -65,8 +64,7 @@ export function SendTokenModal({ isOpen, onClose }: SendTokenModalProps) {
                 Token
               </label>
               <select
-                value={selectedToken?.address || ''}
-                onChange={handleTokenChange}
+                {...register('selectedToken')}
                 className="w-full p-3 bg-gray-700 rounded-lg text-white border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               >
                 {(tokens || []).map((token) => (
@@ -118,7 +116,7 @@ export function SendTokenModal({ isOpen, onClose }: SendTokenModalProps) {
             {tx && (
               <div className="bg-gray-700 rounded-lg p-4">
                 <p className="text-sm text-gray-300 mb-2">Transaction Hash:</p>
-                <p className="text-xs text-gray-400 break-all">{tx.hash}</p>
+                <p className="text-xs text-gray-400 break-all">{tx}</p>
               </div>
             )}
 

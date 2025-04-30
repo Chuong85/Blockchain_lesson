@@ -2,12 +2,16 @@ import { ethers } from 'ethers';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Network, NETWORKS } from '../constants/networks';
+import WalletKit from '@reown/walletkit';
 
-export interface TokenBalance {
+export interface TokenInfo {
   address: string;
   symbol: string;
   name: string;
   decimals: number;
+}
+
+export type TokenBalance = TokenInfo & {
   balance: string;
 }
 
@@ -15,7 +19,7 @@ type WalletState = {
   address: string;
   isUnlocked: boolean;
   network: Network;
-  importedToken: TokenBalance[];
+  importedToken: TokenInfo[];
   provider: ethers.JsonRpcProvider | null;
   signer: ethers.Wallet | null;
   encryptedInfo: string;

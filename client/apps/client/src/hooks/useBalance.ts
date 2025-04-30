@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { TokenBalance, useWalletState } from "../contexts/state";
+import { TokenBalance, TokenInfo, useWalletState } from "../contexts/state";
 import { ethers, ZeroAddress } from "ethers";
-import { ERC20__factory } from "@client/typechain";
+import { getErc20Contract } from "../util/erc20";
 
 export const useNativeBalance = () => {
   const { address, provider, isUnlocked } = useWalletState()
@@ -12,10 +12,9 @@ export const useNativeBalance = () => {
       if (!provider) {
         throw new Error('Provider not found');
       }
-
       const balance = await provider.getBalance(address)
       return {
-        address: ZeroAddress, // 0x0000000000000000000000000000000000000000 || 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
+        address: ZeroAddress,
         symbol: 'ETH',
         name: 'Ether',
         decimals: 18,
@@ -23,7 +22,7 @@ export const useNativeBalance = () => {
       } as TokenBalance
     },
     enabled: !!address && !!provider,
-    gcTime: 0,
+    gcTime: 30_000,
   })
 
   return nativeBalance
@@ -35,20 +34,18 @@ export const useTokenBalances = () => {
   const tokenBalances = useQuery({
     queryKey: ['tokenBalances', address, provider],
     queryFn: async () => {
-      if (!provider) {
-        throw new Error('Provider not found');
-      }
-
-      const balances = await Promise.all(importedToken.map(async (token) => {
-        const erc20Contract = ERC20__factory.connect(token.address, provider)
-        const balance = await erc20Contract.balanceOf(address)
+      return Promise.all(importedToken.map(async (token) => {
+        if (!provider) return {
+          ...token,
+          balance: '0'
+        }
+        const contract = getErc20Contract(token.address, provider)
+        const balance = await contract.balanceOf(address)
         return {
           ...token,
           balance: ethers.formatUnits(balance, token.decimals)
         }
       }))
-
-      return balances
     },
     enabled: !!address && !!provider && !!importedToken,
     gcTime: 30_000
@@ -63,7 +60,7 @@ export const useBalances = () => {
 
   return {
     nativeBalance: nativeBalance.data,
-    data: [nativeBalance.data, ...(tokenBalances.data || [])] as TokenBalance[],
+    data: [nativeBalance.data, ...(tokenBalances.data || [])].filter(Boolean) as TokenBalance[],
     isLoading: nativeBalance.isLoading || tokenBalances.isLoading,
     isError: nativeBalance.isError || tokenBalances.isError,
     error: nativeBalance.error || tokenBalances.error

@@ -8,4 +8,6 @@ export type { erc20Sol };
 export type { ERC20Mock } from "./ERC20Mock";
 export type { Lock } from "./Lock";
 export type { Lottery } from "./Lottery";
+export type { MarketPlace } from "./MarketPlace";
 export type { MultisigWallet } from "./MultisigWallet";
+export type { TrainingNFT } from "./TrainingNFT";

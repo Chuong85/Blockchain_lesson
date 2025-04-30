@@ -6,4 +6,6 @@ export * as erc20Sol from "./Erc20.sol";
 export { ERC20Mock__factory } from "./ERC20Mock__factory";
 export { Lock__factory } from "./Lock__factory";
 export { Lottery__factory } from "./Lottery__factory";
+export { MarketPlace__factory } from "./MarketPlace__factory";
 export { MultisigWallet__factory } from "./MultisigWallet__factory";
+export { TrainingNFT__factory } from "./TrainingNFT__factory";

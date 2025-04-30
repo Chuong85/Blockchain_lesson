@@ -1,6 +1,6 @@
 import { ERC20, ERC20__factory } from "@client/typechain";
 import { ethers } from "ethers";
-import { uniqBy } from "lodash";
+
 
 export interface Erc20Activity {
   action: 'received' | 'sent' | 'approved',
@@ -24,16 +24,15 @@ export const getErc20Events = async (contract: ERC20, userAddress: string, fromB
     sentByUserEvents,
     receivedByUserEvents,
   ] = await Promise.all([
-    contract.queryFilter(contract.filters.Approval(userAddress, undefined), fromBlock, toBlock),
+    contract.queryFilter(contract.filters.Approval(userAddress), fromBlock, toBlock),
     contract.queryFilter(contract.filters.Approval(undefined, userAddress), fromBlock, toBlock),
-    contract.queryFilter(contract.filters.Transfer(userAddress, undefined), fromBlock, toBlock),
+    contract.queryFilter(contract.filters.Transfer(userAddress), fromBlock, toBlock),
     contract.queryFilter(contract.filters.Transfer(undefined, userAddress), fromBlock, toBlock),
   ])
 
   const result = await Promise.all(
     ([] as Promise<Erc20Activity>[]).concat(
       approvedByUserEvents.map(async event => ({
-        id: [event.transactionHash, event.index].join('-'),
         action: 'approved',
         amount: event.args.value.toString(),
         from: event.args.owner,
@@ -45,7 +44,6 @@ export const getErc20Events = async (contract: ERC20, userAddress: string, fromB
     )
       .concat(
         approvedForUserEvents.map(async event => ({
-          id: [event.transactionHash, event.index].join('-'),
           action: 'approved',
           amount: event.args.value.toString(),
           from: event.args.spender,
@@ -57,7 +55,6 @@ export const getErc20Events = async (contract: ERC20, userAddress: string, fromB
       )
       .concat(
         sentByUserEvents.map(async event => ({
-          id: [event.transactionHash, event.index].join('-'),
           action: 'sent',
           amount: event.args.value.toString(),
           from: event.args.from,
@@ -69,7 +66,6 @@ export const getErc20Events = async (contract: ERC20, userAddress: string, fromB
       )
       .concat(
         receivedByUserEvents.map(async event => ({
-          id: [event.transactionHash, event.index].join('-'),
           action: 'received',
           amount: event.args.value.toString(),
           from: event.args.from,
@@ -81,5 +77,5 @@ export const getErc20Events = async (contract: ERC20, userAddress: string, fromB
       )
   )
 
-  return uniqBy(result, 'id')
+  return result.sort((a, b) => b.blockNumber - a.blockNumber);
 }

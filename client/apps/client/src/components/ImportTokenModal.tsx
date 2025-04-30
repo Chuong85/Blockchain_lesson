@@ -1,8 +1,7 @@
-import { ERC20__factory } from '@client/typechain';
 import { Dialog } from '@headlessui/react';
 import { useState } from 'react';
 import { useWalletState } from '../contexts/state';
-import { ethers } from 'ethers';
+import { getErc20Contract } from '../util/erc20';
 
 interface ImportTokenModalProps {
   isOpen: boolean;
@@ -11,31 +10,23 @@ interface ImportTokenModalProps {
 
 export function ImportTokenModal({ isOpen, onClose }: ImportTokenModalProps) {
   const [address, setAddress] = useState('');
-  const { provider, signer, set, importedToken } = useWalletState()
+  const { importedToken, set, provider } = useWalletState()
 
   const handleImport = async () => {
-    if (!provider) {
-      return;
+    if (!provider) return
+    const contract = getErc20Contract(address, provider)
+    const [name, symbol, decimals] = await Promise.all([
+      contract.name(),
+      contract.symbol(),
+      contract.decimals()
+    ])
+    const tokenInfo = {
+      address,
+      name,
+      symbol,
+      decimals: Number(decimals)
     }
-
-    const erc20Contract = ERC20__factory.connect(address, signer!);
-    const [name, symbol, decimals, balance] = await Promise.all([
-      erc20Contract.name(),
-      erc20Contract.symbol(),
-      erc20Contract.decimals(),
-      erc20Contract.balanceOf(signer!.address),
-    ]);
-
-    set({
-      importedToken: [...importedToken, {
-        address,
-        balance: ethers.formatUnits(balance, decimals),
-        name,
-        symbol,
-        decimals: Number(decimals),
-      }]
-    })
-    console.log(name, symbol, decimals);
+    set({ importedToken: [...importedToken, tokenInfo] })
   };
 
   return (

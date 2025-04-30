@@ -4,8 +4,8 @@ import { sepolia } from 'wagmi/chains'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 
 export function WalletConnect() {
-  const { address, isConnected } = useAccount()
-  const { disconnect } = useDisconnect()
+  const { address, isConnected,  } = useAccount()
+  const { disconnect,  } = useDisconnect()
   const { data: balance } = useBalance({ address })
   const chainId = useChainId()
   const { open } = useWeb3Modal()

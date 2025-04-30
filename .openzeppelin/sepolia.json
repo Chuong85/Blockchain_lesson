@@ -1,0 +1,160 @@
+{
+  "manifestVersion": "3.2",
+  "proxies": [
+    {
+      "address": "0x53EbB2e255e8eBecc3048E6727Ec47577cC91d64",
+      "txHash": "0xd47838f11c59e13a419d8aee23ac9a456de74f05c0bc95e186eaeac9e56d9ef8",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "8e69782d4efdf0bdae0edeb46ec2823947169dc4d010019fbd223459d5b51020": {
+      "address": "0xA6CE3069Bc82b8Ec91fFF627d235E472F9e85fFB",
+      "txHash": "0x81881ba83f2ed593d978dd639f3803dbec354731e62a22f57015e6d5a91e53e2",
+      "layout": {
+        "solcVersion": "0.8.28",
+        "storage": [
+          {
+            "label": "lockCount",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256",
+            "contract": "Lock",
+            "src": "contracts/Lock.sol:15"
+          },
+          {
+            "label": "lockMap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_mapping(t_uint256,t_struct(LockInfo)10_storage)",
+            "contract": "Lock",
+            "src": "contracts/Lock.sol:16"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_uint256,t_struct(LockInfo)10_storage)": {
+            "label": "mapping(uint256 => struct Lock.LockInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(LockInfo)10_storage": {
+            "label": "struct Lock.LockInfo",
+            "members": [
+              {
+                "label": "amount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "unlockTime",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "user",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "isUnlocked",
+                "type": "t_bool",
+                "offset": 20,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        },
+        "namespaces": {}
+      }
+    },
+    "ddd0bcb360a7c4f7171499a622349dbea53173acc51bb518284d3850afbb4285": {
+      "address": "0xA5f7d7229DA5fE9B9AB035a4Fe1676E7525AaD21",
+      "txHash": "0xa7b2d28a568e929a5a93c64ab61838ed3007e84936c111d755f8ac4d554d47f3",
+      "layout": {
+        "solcVersion": "0.8.28",
+        "storage": [
+          {
+            "label": "lockCount",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256",
+            "contract": "Lock",
+            "src": "contracts/Lock.sol:15"
+          },
+          {
+            "label": "lockMap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_mapping(t_uint256,t_struct(LockInfo)10_storage)",
+            "contract": "Lock",
+            "src": "contracts/Lock.sol:16"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_uint256,t_struct(LockInfo)10_storage)": {
+            "label": "mapping(uint256 => struct Lock.LockInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(LockInfo)10_storage": {
+            "label": "struct Lock.LockInfo",
+            "members": [
+              {
+                "label": "amount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "unlockTime",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "user",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "isUnlocked",
+                "type": "t_bool",
+                "offset": 20,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        },
+        "namespaces": {}
+      }
+    }
+  }
+}
